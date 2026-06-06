@@ -3,7 +3,7 @@ import { usuariosDemo, Cotizacion, Detalle_Cotizacion } from './data/modelos';
 import { catalogoMaquinaria } from './data/maquinaria';
 
 // Importación de Componentes
-import { Navbar } from './components/Navbar';
+import { Navbar } from './components/barranav';
 import { Footer } from './components/Footer';
 import { HeroBanner } from './components/HeroBanner';
 import { Nosotros } from './components/Nosotros';
