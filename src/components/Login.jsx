@@ -1,0 +1,109 @@
+// src/components/Login.jsx
+import { useState } from 'react';
+
+// Reutilizamos la función que da formato visual automático al RUT
+const formatearRUT = (rut) => {
+  let valor = rut.replace(/[^0-9kK]/g, '').toUpperCase();
+  
+  if (valor.length === 0) return '';
+  if (valor.length === 1) return valor;
+  
+  let cuerpo = valor.slice(0, -1);
+  let dv = valor.slice(-1);
+  
+  cuerpo = cuerpo.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  
+  return `${cuerpo}-${dv}`;
+};
+
+export function Login({ listaUsuarios, setUsuarioActivo, setVistaActual }) {
+  const [correo, setCorreo] = useState('');
+  const [rut, setRut] = useState('');
+  const [contrasena, setContrasena] = useState('');
+
+  // Nueva función para manejar el cambio en el input del RUT
+  const manejarCambioRut = (e) => {
+    const rutFormateado = formatearRUT(e.target.value);
+    setRut(rutFormateado);
+  };
+
+  const manejarSubmit = (e) => {
+    e.preventDefault();
+    
+    const usuarioEncontrado = listaUsuarios.find(u => u.correo === correo);
+    
+    if (usuarioEncontrado) {
+      const exito = usuarioEncontrado.inicia_Sesion(contrasena);
+      if (exito) {
+        if (usuarioEncontrado.rol === 'CLIENTE' && usuarioEncontrado.rut !== rut) {
+          alert("Acceso denegado: El RUT no coincide.");
+          return;
+        }
+        setUsuarioActivo(usuarioEncontrado);
+        setVistaActual('inicio');
+      } else { 
+        alert("Acceso denegado: Contraseña incorrecta."); 
+      }
+    } else { 
+      alert("Acceso denegado: Usuario no encontrado."); 
+    }
+  };
+
+  return (
+    <div className="flex-grow flex items-center justify-center p-4 animate-fade-in">
+      <div className="bg-white p-8 rounded-xl shadow-2xl border-t-8 border-catYellow max-w-md w-full">
+        <h2 className="text-2xl font-black text-asfalto text-center uppercase tracking-tight mb-6">
+          Acceso a Clientes
+        </h2>
+        
+        <form onSubmit={manejarSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-bold text-carbon mb-1">Correo Electrónico</label>
+            <input 
+              type="email" 
+              required 
+              value={correo} 
+              onChange={(e) => setCorreo(e.target.value)} 
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-catYellow focus:outline-none" 
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-carbon mb-1">RUT Empresa / Persona</label>
+            <input 
+              type="text" 
+              required 
+              value={rut} 
+              onChange={manejarCambioRut} // Aplicamos la función aquí
+              maxLength={12} // Evita que se escriban números de más
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-catYellow focus:outline-none" 
+              placeholder="Ej: 76.123.456-7"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-bold text-carbon mb-1">Contraseña</label>
+            <input 
+              type="password" 
+              required 
+              value={contrasena} 
+              onChange={(e) => setContrasena(e.target.value)} 
+              className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-catYellow focus:outline-none" 
+            />
+          </div>
+          <button type="submit" className="w-full mt-6 bg-catYellow hover:bg-catYellowHover text-asfalto font-bold py-3 rounded-lg shadow uppercase transition-colors">
+            Ingresar
+          </button>
+        </form>
+
+        <div className="text-center mt-4">
+          <button 
+            type="button"
+            onClick={() => setVistaActual('registro')} 
+            className="text-xs text-asfalto font-semibold hover:underline"
+          >
+            ¿No tiene cuenta de empresa? Regístrese aquí
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

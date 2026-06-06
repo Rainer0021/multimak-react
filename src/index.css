@@ -1,0 +1,9 @@
+@import "tailwindcss";
+
+@theme {
+  --color-catYellow: #FFCD00;
+  --color-catYellowHover: #E6B800;
+  --color-asfalto: #111111;
+  --color-carbon: #333333;
+  --color-cemento: #F5F5F7;
+}
