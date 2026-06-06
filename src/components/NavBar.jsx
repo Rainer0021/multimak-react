@@ -1,5 +1,3 @@
-// src/components/Navbar.jsx
-
 export function Navbar({ vistaActual, setVistaActual, usuarioActivo, cerrarSesion }) {
   return (
     <nav className="bg-asfalto text-white shadow-lg sticky top-0 z-50 border-b-4 border-catYellow">
