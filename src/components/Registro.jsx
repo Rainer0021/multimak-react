@@ -1,4 +1,3 @@
-// src/components/Registro.jsx
 import { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
 
@@ -36,7 +35,7 @@ const formatearRUT = (rut) => {
   return `${cuerpo}-${dv}`;
 };
 
-// MODIFICACIÓN: Cambiamos la verificación booleana por un calculador exacto de edad
+// Calcular edad
 const calcularEdad = (fechaNacimiento) => {
   if (!fechaNacimiento) return -1;
   const hoy = new Date();
