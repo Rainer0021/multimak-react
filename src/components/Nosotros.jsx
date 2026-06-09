@@ -1,5 +1,3 @@
-// src/components/Nosotros.jsx
-
 export function Nosotros() {
   return (
     <div className="flex flex-col flex-grow animate-fade-in">

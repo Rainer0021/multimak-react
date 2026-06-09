@@ -3,7 +3,7 @@ export function HeroBanner({ titulo, subtitulo, imagenFondo = "Fondo.jpg" }) {
     <header 
       className="relative h-[300px] flex items-center justify-center border-b-4 border-catYellow bg-asfalto bg-cover bg-center"
       style={{ 
-        // El gradiente oscurece la imagen de fondo para que el texto sea legible
+
         backgroundImage: `linear-gradient(rgba(17, 17, 17, 0.7), rgba(17, 17, 17, 0.7)), url('/${imagenFondo}')` 
       }}
     >

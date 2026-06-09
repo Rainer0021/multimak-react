@@ -1,4 +1,4 @@
-// 1. Clase Base (Como en tu diagrama)
+// 1. Clase Base
 export class Usuario {
   constructor(id_usuario, nombre_Usuario, correo, contrasena, activo = true) {
     this.id_usuario = id_usuario;
@@ -24,7 +24,7 @@ export class Administrador extends Usuario {
     super(id_usuario, nombre_Usuario, correo, contrasena);
     this.codigo_Empleado = codigo_Empleado;
     this.nivel_Permiso = nivel_Permiso;
-    this.rol = 'ADMIN'; // Util para la interfaz de React
+    this.rol = 'ADMIN'; 
   }
 }
 
@@ -34,13 +34,12 @@ export class Cliente extends Usuario {
     super(id_usuario, nombre_Usuario, correo, contrasena);
     this.rut = rut;
     this.telefono = telefono;
-    this.rol = 'CLIENTE'; // Util para la interfaz de React
+    this.rol = 'CLIENTE'; 
   }
 }
 
-// ==========================================
-// BASE DE DATOS SIMULADA (MOCK DATA)
-// ==========================================
+
+// BASE DE DATOS SIMULADA
 
 export const usuariosDemo = [
   // Cuenta Administrador para pruebas
@@ -70,7 +69,7 @@ export class Detalle_Cotizacion {
     this.id_detalle = id_detalle;
     this.maquina = maquina;
     this.cantidad_Dias = cantidad_Dias;
-    this.accesorios = []; // Relación con Accesorio
+    this.accesorios = []; 
   }
 
   agregar_Accesorio(accesorio) {
@@ -99,7 +98,7 @@ export class Cotizacion {
     this.fecha_Validez = new Date();
     this.fecha_Validez.setDate(this.fecha_Creacion.getDate() + 15);
     
-    this.detalles = []; // Relación 1:0..*
+    this.detalles = [];
     this.subtotal = 0;
     this.iva = 0;
     this.total = 0;

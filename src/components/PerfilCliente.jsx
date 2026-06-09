@@ -1,19 +1,17 @@
-// src/components/PerfilCliente.jsx
 import { useState, useEffect } from 'react';
 
 export function PerfilCliente({ usuarioActivo, actualizarUsuario }) {
-  // --- ESTADOS DEL FORMULARIO DE PERFIL ---
+  //ESTADOS DEL FORMULARIO DE PERFIL
   const [formData, setFormData] = useState({
     nombre: usuarioActivo.nombre_Usuario || '',
     correo: usuarioActivo.correo || '',
     rut: usuarioActivo.rut || '',
-    // Dejamos la contraseña en blanco. Si escribe algo, se actualiza.
     nuevaContrasena: '' 
   });
 
   const [mensajeExito, setMensajeExito] = useState('');
 
-  // --- ESTADO DEL HISTORIAL ---
+  // ESTADO DEL HISTORIAL
   const [miHistorial, setMiHistorial] = useState([]);
 
   // Cargar historial al montar el componente

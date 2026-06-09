@@ -1,4 +1,3 @@
-// src/components/PanelAdmin.jsx
 import { useState, useEffect } from 'react';
 
 export function PanelAdmin() {

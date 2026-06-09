@@ -1,9 +1,6 @@
-// src/components/MaquinaCard.jsx
-
 export function MaquinaCard({ maquina, onSeleccionar, formatearPrecio }) {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden border border-gray-200 hover:shadow-xl transition-shadow flex flex-col">
-      {/* AQUÍ ESTÁ EL CAMBIO: Apuntamos a la carpeta public */}
       <div className="h-48 overflow-hidden bg-gray-100 border-b-4 border-catYellow">
         <img 
           src={`/${maquina.img}`} 

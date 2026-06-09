@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import SHA256 from 'crypto-js/sha256'; // Agregamos el motor de cifrado
+import SHA256 from 'crypto-js/sha256';
 
-// Reutilizamos la función que da formato visual automático al RUT
+// Formateo de rut
 const formatearRUT = (rut) => {
   let valor = rut.replace(/[^0-9kK]/g, '').toUpperCase();
   
@@ -21,7 +21,7 @@ export function Login({ listaUsuarios, setUsuarioActivo, setVistaActual }) {
   const [rut, setRut] = useState('');
   const [contrasena, setContrasena] = useState('');
 
-  // Nueva función para manejar el cambio en el input del RUT
+  // Cambio de rut auto
   const manejarCambioRut = (e) => {
     const rutFormateado = formatearRUT(e.target.value);
     setRut(rutFormateado);
@@ -46,7 +46,6 @@ export function Login({ listaUsuarios, setUsuarioActivo, setVistaActual }) {
           return;
         }
         
-        // Si todo está correcto, damos acceso
         setUsuarioActivo(usuarioEncontrado);
         setVistaActual('inicio');
       } else { 
