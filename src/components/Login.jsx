@@ -1,5 +1,5 @@
-// src/components/Login.jsx
 import { useState } from 'react';
+import SHA256 from 'crypto-js/sha256'; // Agregamos el motor de cifrado
 
 // Reutilizamos la función que da formato visual automático al RUT
 const formatearRUT = (rut) => {
@@ -30,15 +30,23 @@ export function Login({ listaUsuarios, setUsuarioActivo, setVistaActual }) {
   const manejarSubmit = (e) => {
     e.preventDefault();
     
+    // 1. Buscamos al usuario por su correo
     const usuarioEncontrado = listaUsuarios.find(u => u.correo === correo);
     
     if (usuarioEncontrado) {
-      const exito = usuarioEncontrado.inicia_Sesion(contrasena);
-      if (exito) {
+      // 2. Transformamos la contraseña escrita al mismo formato seguro
+      const intentoPassword = SHA256(contrasena).toString();
+
+      // 3. Comparamos los Hashes directamente
+      if (usuarioEncontrado.contrasena === intentoPassword) {
+        
+        // 4. Verificación de seguridad secundaria (RUT)
         if (usuarioEncontrado.rol === 'CLIENTE' && usuarioEncontrado.rut !== rut) {
-          alert("Acceso denegado: El RUT no coincide.");
+          alert("Acceso denegado: El RUT no coincide con los registros del sistema.");
           return;
         }
+        
+        // Si todo está correcto, damos acceso
         setUsuarioActivo(usuarioEncontrado);
         setVistaActual('inicio');
       } else { 
@@ -73,8 +81,8 @@ export function Login({ listaUsuarios, setUsuarioActivo, setVistaActual }) {
               type="text" 
               required 
               value={rut} 
-              onChange={manejarCambioRut} // Aplicamos la función aquí
-              maxLength={12} // Evita que se escriban números de más
+              onChange={manejarCambioRut} 
+              maxLength={12} 
               className="w-full bg-gray-50 border border-gray-300 rounded-lg p-3 text-sm focus:ring-2 focus:ring-catYellow focus:outline-none" 
               placeholder="Ej: 76.123.456-7"
             />

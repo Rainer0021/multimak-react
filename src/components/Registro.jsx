@@ -1,5 +1,5 @@
-// src/components/Registro.jsx
 import { useState } from 'react';
+import SHA256 from 'crypto-js/sha256';
 
 // Función validadora matemática de RUT
 const validarRUT = (rut) => {
@@ -8,6 +8,9 @@ const validarRUT = (rut) => {
   const dv = valorLimpio.slice(-1).toUpperCase();
 
   if (cuerpo.length < 7) return false;
+
+  // Bloquear RUTs donde todos los números son iguales
+  if (/^(\d)\1+$/.test(cuerpo)) return false;
 
   let suma = 0;
   let multiplo = 2;
@@ -49,13 +52,14 @@ const esMayorDeEdad = (fechaNacimiento) => {
   return edad >= 18;
 };
 
-// NUEVA FUNCIÓN: Validador de contraseña fuerte
 const validarContrasenaFuerte = (contrasena) => {
-  // Regex: (?=.*[0-9]) = al menos 1 número
-  // Regex: (?=.*[^a-zA-Z0-9]) = al menos 1 símbolo (no alfanumérico)
-  // Regex: .{8,} = mínimo 8 caracteres
   const regex = /^(?=.*[0-9])(?=.*[^a-zA-Z0-9]).{8,}$/;
   return regex.test(contrasena);
+};
+
+const validarCorreo = (correo) => {
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return regex.test(correo);
 };
 
 export function Registro({ alRegistrarUsuario, setVistaActual }) {
@@ -72,7 +76,10 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
 
   const [errorRut, setErrorRut] = useState('');
   const [errorEdad, setErrorEdad] = useState('');
-  const [errorContrasena, setErrorContrasena] = useState(''); // Nuevo estado para error de clave
+  const [errorContrasena, setErrorContrasena] = useState('');
+  const [errorCorreo, setErrorCorreo] = useState(''); 
+
+  const hoyTexto = new Date().toISOString().split('T')[0];
 
   const manejarCambio = (e) => {
     const { id, value } = e.target;
@@ -84,8 +91,7 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
     }
 
     if (id === 'fechaNacimiento') setErrorEdad(''); 
-    
-    // Limpiamos el error de contraseña cuando el usuario empiece a corregirla
+    if (id === 'correo') setErrorCorreo(''); 
     if (id === 'contrasena' || id === 'confirmarContrasena') setErrorContrasena(''); 
 
     setFormData({ ...formData, [id]: valorFinal });
@@ -99,23 +105,37 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
       return;
     }
 
-    if (tipoRegistro === 'natural' && !esMayorDeEdad(formData.fechaNacimiento)) {
-      setErrorEdad('Debe ser mayor de 18 años para registrarse como persona natural.');
+    if (!validarCorreo(formData.correo)) {
+      setErrorCorreo('Debe ingresar un correo electrónico válido (ejemplo: usuario@dominio.com).');
       return;
     }
 
-    // 1. Validar Fuerza de Contraseña
+    if (tipoRegistro === 'natural') {
+      if (!esMayorDeEdad(formData.fechaNacimiento)) {
+        setErrorEdad('Debe ser mayor de 18 años para registrarse como persona natural.');
+        return;
+      }
+    } else {
+      if (formData.fechaNacimiento > hoyTexto) {
+        setErrorEdad('La fecha de constitución no puede ser una fecha futura.');
+        return;
+      }
+    }
+
     if (!validarContrasenaFuerte(formData.contrasena)) {
       setErrorContrasena('La contraseña no cumple con los requisitos mínimos de seguridad.');
       return;
     }
 
-    // 2. Validar que coincidan
     if (formData.contrasena !== formData.confirmarContrasena) {
       setErrorContrasena('Las contraseñas no coinciden.');
       return;
     }
 
+    // APLICACIÓN DEL CIFRADO DE UNA VÍA
+    const passwordSegura = SHA256(formData.contrasena).toString();
+
+    // Creación del usuario con la contraseña transformada
     const nuevoUsuario = {
       nombre_Usuario: formData.nombre,
       correo: formData.correo,
@@ -123,7 +143,7 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
       fecha_nacimiento: formData.fechaNacimiento,
       tipo_cliente: tipoRegistro,
       rol: 'CLIENTE',
-      inicia_Sesion: function(pass) { return pass === formData.contrasena; }
+      contrasena: passwordSegura
     };
 
     alRegistrarUsuario(nuevoUsuario);
@@ -182,16 +202,24 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
             <label className="block text-sm font-bold text-carbon mb-1">
               {tipoRegistro === 'natural' ? 'Fecha de Nacimiento' : 'Fecha de Constitución'}
             </label>
-            <input type="date" id="fechaNacimiento" required value={formData.fechaNacimiento} onChange={manejarCambio} className={`w-full bg-gray-50 border rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-catYellow ${errorEdad ? 'border-red-500' : 'border-gray-300'}`} />
+            <input 
+              type="date" 
+              id="fechaNacimiento" 
+              required 
+              max={hoyTexto} 
+              value={formData.fechaNacimiento} 
+              onChange={manejarCambio} 
+              className={`w-full bg-gray-50 border rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-catYellow ${errorEdad ? 'border-red-500' : 'border-gray-300'}`} 
+            />
             {errorEdad && <p className="text-red-500 text-xs mt-1 font-semibold">{errorEdad}</p>}
           </div>
 
           <div>
             <label className="block text-sm font-bold text-carbon mb-1">Correo Electrónico</label>
-            <input type="email" id="correo" required value={formData.correo} onChange={manejarCambio} className="w-full bg-gray-50 border border-gray-300 rounded-lg p-2.5 text-sm focus:ring-catYellow focus:outline-none" />
+            <input type="email" id="correo" required value={formData.correo} onChange={manejarCambio} className={`w-full bg-gray-50 border rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-catYellow ${errorCorreo ? 'border-red-500' : 'border-gray-300'}`} placeholder="ejemplo@correo.com" />
+            {errorCorreo && <p className="text-red-500 text-xs mt-1 font-semibold">{errorCorreo}</p>}
           </div>
 
-          {/* Sección de Contraseñas actualizada */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-bold text-carbon mb-1">Contraseña</label>
@@ -206,7 +234,7 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-carbon mb-1">Confirmar Contraseña</label>
+              <label className="block text-sm font-bold text-carbon mb-1">Confirmar</label>
               <input 
                 type="password" 
                 id="confirmarContrasena" 
@@ -218,7 +246,6 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
             </div>
           </div>
           
-          {/* Mensajes de ayuda y error de contraseña combinados */}
           <div className="mt-1">
             {errorContrasena ? (
               <p className="text-red-500 text-xs font-semibold">{errorContrasena}</p>

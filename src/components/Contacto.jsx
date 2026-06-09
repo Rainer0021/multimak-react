@@ -23,12 +23,12 @@ export function Contacto() {
     }
   };
 
-  // Lógica de validación traducida a React
+  // Lógica de validación
   const validarFormulario = () => {
     let nuevosErrores = {};
     let esValido = true;
 
-    // Validación Nombre (al menos 2 palabras y 4 caracteres)
+    // Validación Nombre
     const nombreVal = formData.nombre.trim();
     if (nombreVal.split(' ').length < 2 || nombreVal.length < 4) {
       nuevosErrores.nombre = 'Por favor, ingrese al menos un nombre y un apellido.';
@@ -160,14 +160,19 @@ export function Contacto() {
             </div>
           </div>
 
-          {/* Columna de la Imagen (5 columnas) */}
+          {/* Columna del Mapa (5 columnas) */}
           <div className="lg:col-span-5">
-            <div className="h-full min-h-[400px]">
-              <img 
-                src="/CATERPILLAR 416E.jpg" 
-                alt="Retroexcavadora Caterpillar 416E" 
-                className="object-cover w-full h-full rounded-xl shadow-lg border border-gray-200"
-              />
+            <div className="h-full min-h-[400px] w-full rounded-xl shadow-lg border border-gray-200 overflow-hidden relative">
+              <iframe
+                title="Mapa de Ubicación Puerto Natales"
+                src="https://maps.google.com/maps?q=Puerto%20Natales,%20Chile&t=&z=13&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0, position: 'absolute', top: 0, left: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </div>
 

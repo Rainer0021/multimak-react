@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+
+//Data
 import { usuariosDemo, Cotizacion, Detalle_Cotizacion } from './data/modelos';
 import { catalogoMaquinaria } from './data/maquinaria';
 
-// Importación de Componentes
+// Componentes
 import { Navbar } from './components/barranav';
 import { Footer } from './components/Footer';
 import { HeroBanner } from './components/HeroBanner';
@@ -18,23 +20,34 @@ import { FormularioCotizacion } from './components/FormularioCotizacion';
 import { Catalogo } from './components/Catalogo';
 
 function App() {
-  // --- ESTADOS DE NAVEGACIÓN Y USUARIO ---
+  // Estados Usuario y navegacion
   const [vistaActual, setVistaActual] = useState('inicio'); 
   const [usuarioActivo, setUsuarioActivo] = useState(null);
-  const [listaUsuarios, setListaUsuarios] = useState(usuariosDemo);
 
-  // --- ESTADOS DE LA API (Mindicador) ---
+  // 1. MODIFICACIÓN: Leer desde Local Storage al iniciar la app
+  const [listaUsuarios, setListaUsuarios] = useState(() => {
+    const usuariosGuardados = localStorage.getItem('usuarios_multimak');
+    // Si hay datos guardados, los usamos. Si no, cargamos los de prueba (usuariosDemo)
+    return usuariosGuardados ? JSON.parse(usuariosGuardados) : usuariosDemo;
+  });
+
+  // 2. MODIFICACIÓN: Guardar automáticamente en Local Storage cada vez que la lista cambie
+  useEffect(() => {
+    localStorage.setItem('usuarios_multimak', JSON.stringify(listaUsuarios));
+  }, [listaUsuarios]);
+
+  // Estados Mi indicador
   const [indicadores, setIndicadores] = useState(null);
   const [monedaActual, setMonedaActual] = useState('CLP');
 
-  // --- ESTADOS DEL FORMULARIO DEL COTIZADOR ---
+  // Estados de formulario
   const [equipoSeleccionado, setEquipoSeleccionado] = useState('');
   const [accesoriosSeleccionados, setAccesoriosSeleccionados] = useState([]);
   const [diasArriendo, setDiasArriendo] = useState('');
   const [cotizacionGenerada, setCotizacionGenerada] = useState(null);
 
-  // --- EFECTOS ---
-  // Cargar API de mindicador.cl al abrir la página
+
+  // Cargar API
   useEffect(() => {
     fetch('https://mindicador.cl/api')
       .then(respuesta => respuesta.json())
@@ -49,7 +62,7 @@ function App() {
       .catch(error => console.error("Error al obtener indicadores:", error));
   }, []);
 
-  // --- FUNCIONES CORE ---
+  // Funciones
   const agregarNuevoUsuario = (nuevoUsuario) => {
     setListaUsuarios([...listaUsuarios, nuevoUsuario]);
   };
