@@ -37,7 +37,7 @@ export function FormularioCotizacion({
           </select>
         </div>
 
-        {/* 2. Selector de Días (Límite aplicado) */}
+        {/* 2. Selector de Días */}
         <div>
           <label className="block text-sm font-bold text-carbon mb-1">2. Días de Arriendo (Máx. 29):</label>
           <input 

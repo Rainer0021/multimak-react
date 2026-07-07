@@ -1,4 +1,3 @@
-// src/components/Catalogo.jsx
 import { MaquinaCard } from './MaquinaCard';
 
 export function Catalogo({ 

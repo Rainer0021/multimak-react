@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
 
+<<<<<<< HEAD
 // Validacion de rut
+=======
+>>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
 const validarRUT = (rut) => {
   const valorLimpio = rut.replace(/\./g, '').replace(/-/g, '');
   const cuerpo = valorLimpio.slice(0, -1);
   const dv = valorLimpio.slice(-1).toUpperCase();
 
   if (cuerpo.length < 7) return false;
+<<<<<<< HEAD
 
+=======
+>>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
   if (/^(\d)\1+$/.test(cuerpo)) return false;
 
   let suma = 0;
@@ -37,9 +43,13 @@ const formatearRUT = (rut) => {
   return `${cuerpo}-${dv}`;
 };
 
-const esMayorDeEdad = (fechaNacimiento) => {
+// Calcular edad
+const calcularEdad = (fechaNacimiento) => {
+  if (!fechaNacimiento) return -1;
   const hoy = new Date();
-  const fechaNac = new Date(fechaNacimiento);
+  // Se extraen los datos manualmente para evitar saltos de zona horaria
+  const [year, month, day] = fechaNacimiento.split('-');
+  const fechaNac = new Date(year, month - 1, day);
   
   let edad = hoy.getFullYear() - fechaNac.getFullYear();
   const diferenciaMeses = hoy.getMonth() - fechaNac.getMonth();
@@ -48,7 +58,7 @@ const esMayorDeEdad = (fechaNacimiento) => {
     edad--;
   }
 
-  return edad >= 18;
+  return edad;
 };
 
 const validarContrasenaFuerte = (contrasena) => {
@@ -79,6 +89,13 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
   const [errorCorreo, setErrorCorreo] = useState(''); 
 
   const hoyTexto = new Date().toISOString().split('T')[0];
+  
+  // Límite de 130 años para el calendario
+  const fechaMinima = new Date();
+  fechaMinima.setFullYear(fechaMinima.getFullYear() - 130);
+  const minTexto = fechaMinima.toISOString().split('T')[0];
+
+  const edadActual = tipoRegistro === 'natural' && formData.fechaNacimiento ? calcularEdad(formData.fechaNacimiento) : -1;
 
   const manejarCambio = (e) => {
     const { id, value } = e.target;
@@ -110,8 +127,13 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
     }
 
     if (tipoRegistro === 'natural') {
-      if (!esMayorDeEdad(formData.fechaNacimiento)) {
+      const edad = calcularEdad(formData.fechaNacimiento);
+      if (edad < 18) {
         setErrorEdad('Debe ser mayor de 18 años para registrarse como persona natural.');
+        return;
+      }
+      if (edad > 130) {
+        setErrorEdad('La edad ingresada supera el límite máximo permitido (130 años).');
         return;
       }
     } else {
@@ -131,10 +153,8 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
       return;
     }
 
-    // APLICACIÓN DEL CIFRADO DE UNA VÍA
     const passwordSegura = SHA256(formData.contrasena).toString();
 
-    // Creación del usuario con la contraseña transformada
     const nuevoUsuario = {
       nombre_Usuario: formData.nombre,
       correo: formData.correo,
@@ -206,10 +226,17 @@ export function Registro({ alRegistrarUsuario, setVistaActual }) {
               id="fechaNacimiento" 
               required 
               max={hoyTexto} 
+              min={tipoRegistro === 'natural' ? minTexto : undefined}
               value={formData.fechaNacimiento} 
               onChange={manejarCambio} 
               className={`w-full bg-gray-50 border rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-catYellow ${errorEdad ? 'border-red-500' : 'border-gray-300'}`} 
             />
+            {/* Mensaje visual de edad actual */}
+            {tipoRegistro === 'natural' && edadActual >= 0 && (
+              <p className="text-gray-600 text-xs mt-1 font-bold">
+                Edad actual: {edadActual} {edadActual === 1 ? 'año' : 'años'}
+              </p>
+            )}
             {errorEdad && <p className="text-red-500 text-xs mt-1 font-semibold">{errorEdad}</p>}
           </div>
 
