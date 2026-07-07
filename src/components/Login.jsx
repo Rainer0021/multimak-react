@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
 
-<<<<<<< HEAD
-=======
-// Formateo de rut
->>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
 const formatearRUT = (rut) => {
   let valor = rut.replace(/[^0-9kK]/g, '').toUpperCase();
   
@@ -40,7 +36,6 @@ const manejarSubmit = (e) => {
     // 2. Transformamos la contraseña escrita al formato seguro
     const intentoPassword = SHA256(contrasena).toString();
 
-<<<<<<< HEAD
     // 3. Verificamos si la contraseña coincide
     if (usuarioEncontrado.contrasena === intentoPassword) {
       
@@ -49,21 +44,6 @@ const manejarSubmit = (e) => {
       if (usuarioEncontrado.activo === false) {
         alert("⚠️ ACCESO DENEGADO: Su cuenta ha sido desactivada por administración.");
         return; // El 'return' corta la función aquí mismo y no lo deja entrar
-=======
-      // 3. Comparamos los Hashes directamente
-      if (usuarioEncontrado.contrasena === intentoPassword) {
-        
-        // 4. Verificación de seguridad secundaria (RUT)
-        if (usuarioEncontrado.rol === 'CLIENTE' && usuarioEncontrado.rut !== rut) {
-          alert("Acceso denegado: El RUT no coincide con los registros del sistema.");
-          return;
-        }
-        
-        setUsuarioActivo(usuarioEncontrado);
-        setVistaActual('inicio');
-      } else { 
-        alert("Acceso denegado: Contraseña incorrecta."); 
->>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
       }
 
       // --- VALIDACIÓN 2: COINCIDENCIA DE RUT ---

@@ -45,7 +45,6 @@ export function HeroBanner({ titulo, subtitulo }) {
   };
 
   return (
-<<<<<<< HEAD
     <div className="relative w-full h-[350px] md:h-[450px] overflow-hidden bg-asfalto shadow-inner">
       
       {/* Contenedor del Slider (Se mueve en el Eje X según el índice) */}
@@ -78,24 +77,6 @@ export function HeroBanner({ titulo, subtitulo }) {
             </div>
           </div>
         ))}
-=======
-    <header 
-      className="relative h-[300px] flex items-center justify-center border-b-4 border-catYellow bg-asfalto bg-cover bg-center"
-      style={{ 
-
-        backgroundImage: `linear-gradient(rgba(17, 17, 17, 0.7), rgba(17, 17, 17, 0.7)), url('/${imagenFondo}')` 
-      }}
-    >
-      <div className="text-center px-4 relative z-10 animate-fade-in">
-        <h1 className="text-4xl md:text-5xl font-black text-white mb-3 uppercase tracking-tight shadow-sm">
-          {titulo}
-        </h1>
-        {subtitulo && (
-          <p className="text-catYellow text-lg md:text-xl font-medium tracking-wide">
-            {subtitulo}
-          </p>
-        )}
->>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
       </div>
 
       {/* Flecha Izquierda */}
