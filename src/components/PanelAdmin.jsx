@@ -1,9 +1,5 @@
-<<<<<<< HEAD
 // src/components/PanelAdmin.jsx
 import { useState } from 'react';
-=======
-import { useState, useEffect } from 'react';
->>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
 
 export function PanelAdmin({ listaUsuarios, setListaUsuarios, maquinaria, setMaquinaria }) {
   const [pestaña, setPestaña] = useState('maquinaria');

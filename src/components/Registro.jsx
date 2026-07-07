@@ -1,20 +1,13 @@
 import { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
 
-<<<<<<< HEAD
 // Validacion de rut
-=======
->>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
 const validarRUT = (rut) => {
   const valorLimpio = rut.replace(/\./g, '').replace(/-/g, '');
   const cuerpo = valorLimpio.slice(0, -1);
   const dv = valorLimpio.slice(-1).toUpperCase();
 
   if (cuerpo.length < 7) return false;
-<<<<<<< HEAD
-
-=======
->>>>>>> b26dbbe5adcf7915b678ade59686ae1028310495
   if (/^(\d)\1+$/.test(cuerpo)) return false;
 
   let suma = 0;
