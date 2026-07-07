@@ -42,26 +42,56 @@ export class Cliente extends Usuario {
 // BASE DE DATOS SIMULADA (MOCK DATA)
 // ==========================================
 
+// src/data/modelos.js
+
 export const usuariosDemo = [
-  // Cuenta Administrador para pruebas
-  new Administrador(
-    1, 
-    "Admin Multimak", 
-    "admin@multimak.cl", 
-    "admin123", // Contraseña
-    "EMP-001", 
-    "Total"
-  ),
-  
-  // Cuenta Cliente para pruebas
-  new Cliente(
-    2, 
-    "Empresa Constructora Sur", 
-    "cliente@empresa.cl", 
-    "cliente123", // Contraseña
-    "76.543.210-K", 
-    "+56912345678"
-  )
+  {
+    rut: "11.111.111-1",
+    nombre_Usuario: "Carlos Mendoza (Admin General)",
+    correo: "admin@multimak.cl",
+    rol: "ADMIN",
+    tipo_cliente: "natural",
+    activo: true,
+    // Hash SHA256 exacto para la contraseña: admin123
+    contrasena: "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
+  },
+  {
+    rut: "76.543.210-K",
+    nombre_Usuario: "Constructora Torres del Paine SpA",
+    correo: "contacto@constructoratdp.cl",
+    rol: "CLIENTE",
+    tipo_cliente: "empresa",
+    activo: true,
+    // Hash SHA256 exacto para la contraseña: cliente123
+    contrasena: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+  },
+  {
+    rut: "15.234.567-8",
+    nombre_Usuario: "Mateo Soto Alarcón",
+    correo: "mateo.soto@gmail.com",
+    rol: "CLIENTE",
+    tipo_cliente: "natural",
+    activo: true,
+    contrasena: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+  },
+  {
+    rut: "77.888.999-0",
+    nombre_Usuario: "Transportes Australes Ltda",
+    correo: "operaciones@transaustral.cl",
+    rol: "CLIENTE",
+    tipo_cliente: "empresa",
+    activo: false, // <-- CUENTA DESACTIVADA POR DEFECTO PARA PRUEBAS
+    contrasena: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+  },
+  {
+    rut: "18.765.432-1",
+    nombre_Usuario: "Valentina Morales",
+    correo: "v.morales@faenas.cl",
+    rol: "CLIENTE",
+    tipo_cliente: "natural",
+    activo: true,
+    contrasena: "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+  }
 ];
 
 // 4. Clase Detalle_Cotizacion

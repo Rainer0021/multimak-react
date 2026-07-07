@@ -18,23 +18,42 @@ import { PerfilCliente } from './components/PerfilCliente';
 import { PanelAdmin } from './components/PanelAdmin';
 import { FormularioCotizacion } from './components/FormularioCotizacion';
 import { Catalogo } from './components/Catalogo';
+import { ManualUsuario } from './components/ManualUsuario';
 
 function App() {
   // Estados Usuario y navegacion
   const [vistaActual, setVistaActual] = useState('inicio'); 
   const [usuarioActivo, setUsuarioActivo] = useState(null);
 
-  // 1. MODIFICACIÓN: Leer desde Local Storage al iniciar la app
+ // 1. MODIFICACIÓN: Leer desde Local Storage, pero validando que no esté vacío
   const [listaUsuarios, setListaUsuarios] = useState(() => {
     const usuariosGuardados = localStorage.getItem('usuarios_multimak');
-    // Si hay datos guardados, los usamos. Si no, cargamos los de prueba (usuariosDemo)
-    return usuariosGuardados ? JSON.parse(usuariosGuardados) : usuariosDemo;
+    if (usuariosGuardados) {
+      const listaParseada = JSON.parse(usuariosGuardados);
+      // Si la lista guardada tiene al menos 1 usuario, la usamos. Si está vacía, usamos usuariosDemo.
+      if (listaParseada.length > 0) return listaParseada;
+    }
+    return usuariosDemo;
   });
 
   // 2. MODIFICACIÓN: Guardar automáticamente en Local Storage cada vez que la lista cambie
   useEffect(() => {
     localStorage.setItem('usuarios_multimak', JSON.stringify(listaUsuarios));
   }, [listaUsuarios]);
+  
+  // 3. Catálogo de Maquinaria con la misma protección
+  const [maquinaria, setMaquinaria] = useState(() => {
+    const catalogoGuardado = localStorage.getItem('maquinaria_multimak');
+    if (catalogoGuardado) {
+      const catalogoParseado = JSON.parse(catalogoGuardado);
+      if (catalogoParseado.length > 0) return catalogoParseado;
+    }
+    return catalogoMaquinaria;
+  });
+
+useEffect(() => {
+  localStorage.setItem('maquinaria_multimak', JSON.stringify(maquinaria));
+}, [maquinaria]);
 
   // Estados Mi indicador
   const [indicadores, setIndicadores] = useState(null);
@@ -120,6 +139,8 @@ function App() {
   };
 
   // --- RENDERIZADO PRINCIPAL ---
+  console.log("👉 [DIAGNÓSTICO APP] Lista en App:", listaUsuarios);
+  console.log("👉 [DIAGNÓSTICO APP] Maquinaria en App:", maquinaria);
   return (
     <div className="min-h-screen flex flex-col bg-cemento font-sans">
       <Navbar 
@@ -141,11 +162,10 @@ function App() {
       {vistaActual === 'nosotros' && <Nosotros />}
       {vistaActual === 'contacto' && <Contacto />}
       {vistaActual === 'requerimientos' && <Requerimientos />}
+      {vistaActual === 'manual' && (<ManualUsuario />)}
       
-      {vistaActual === 'perfil' && usuarioActivo && (
-        <PerfilCliente 
-          usuarioActivo={usuarioActivo} 
-          actualizarUsuario={actualizarUsuarioEnLista} 
+      {vistaActual === 'perfil' && usuarioActivo && (<PerfilCliente usuarioActivo={usuarioActivo} 
+      actualizarUsuario={actualizarUsuarioEnLista} 
         />
       )}
 
@@ -156,10 +176,12 @@ function App() {
 
           <main className="container mx-auto px-4 py-10 flex-grow">
             {usuarioActivo?.rol === 'ADMIN' ? (
-              
-              /* PANEL DE ADMINISTRADOR */
-              <PanelAdmin />
-
+              <PanelAdmin 
+                listaUsuarios={listaUsuarios}
+                setListaUsuarios={setListaUsuarios}
+                maquinaria={maquinaria}
+                setMaquinaria={setMaquinaria}
+              />
             ) : (
               
               /* VISTA DE CATÁLOGO (PÚBLICA O CLIENTE) */

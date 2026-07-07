@@ -31,6 +31,7 @@ export function Navbar({ vistaActual, setVistaActual, usuarioActivo, cerrarSesio
               <button onClick={() => setVistaActual('contacto')} className={`transition ${vistaActual === 'contacto' ? 'text-catYellow' : 'hover:text-catYellow'}`}>
                 Contacto
               </button>
+              <button onClick={() => setVistaActual('manual')} className="hover:text-catYellow font-bold uppercase text-sm">Manual de Usuario</button>
             </div>
 
             {/* Lógica condicional: Si NO hay usuario, botón de Login. Si lo hay, perfil y Salir. */}

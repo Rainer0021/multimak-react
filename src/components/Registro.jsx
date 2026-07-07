@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import SHA256 from 'crypto-js/sha256';
 
-// Función validadora matemática de RUT
+// Validacion de rut
 const validarRUT = (rut) => {
   const valorLimpio = rut.replace(/\./g, '').replace(/-/g, '');
   const cuerpo = valorLimpio.slice(0, -1);
@@ -9,7 +9,6 @@ const validarRUT = (rut) => {
 
   if (cuerpo.length < 7) return false;
 
-  // Bloquear RUTs donde todos los números son iguales
   if (/^(\d)\1+$/.test(cuerpo)) return false;
 
   let suma = 0;

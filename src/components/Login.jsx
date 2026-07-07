@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import SHA256 from 'crypto-js/sha256'; // Agregamos el motor de cifrado
+import SHA256 from 'crypto-js/sha256';
 
-// Reutilizamos la función que da formato visual automático al RUT
 const formatearRUT = (rut) => {
   let valor = rut.replace(/[^0-9kK]/g, '').toUpperCase();
   
@@ -27,35 +26,43 @@ export function Login({ listaUsuarios, setUsuarioActivo, setVistaActual }) {
     setRut(rutFormateado);
   };
 
-  const manejarSubmit = (e) => {
-    e.preventDefault();
-    
-    // 1. Buscamos al usuario por su correo
-    const usuarioEncontrado = listaUsuarios.find(u => u.correo === correo);
-    
-    if (usuarioEncontrado) {
-      // 2. Transformamos la contraseña escrita al mismo formato seguro
-      const intentoPassword = SHA256(contrasena).toString();
+const manejarSubmit = (e) => {
+  e.preventDefault();
+  
+  // 1. Buscamos al usuario por su correo
+  const usuarioEncontrado = listaUsuarios.find(u => u.correo === correo);
+  
+  if (usuarioEncontrado) {
+    // 2. Transformamos la contraseña escrita al formato seguro
+    const intentoPassword = SHA256(contrasena).toString();
 
-      // 3. Comparamos los Hashes directamente
-      if (usuarioEncontrado.contrasena === intentoPassword) {
-        
-        // 4. Verificación de seguridad secundaria (RUT)
-        if (usuarioEncontrado.rol === 'CLIENTE' && usuarioEncontrado.rut !== rut) {
-          alert("Acceso denegado: El RUT no coincide con los registros del sistema.");
-          return;
-        }
-        
-        // Si todo está correcto, damos acceso
-        setUsuarioActivo(usuarioEncontrado);
-        setVistaActual('inicio');
-      } else { 
-        alert("Acceso denegado: Contraseña incorrecta."); 
+    // 3. Verificamos si la contraseña coincide
+    if (usuarioEncontrado.contrasena === intentoPassword) {
+      
+      // --- VALIDACIÓN 1: CUENTA DESACTIVADA ---
+      // Si la propiedad 'activo' es exactamente false, bloqueamos el paso
+      if (usuarioEncontrado.activo === false) {
+        alert("⚠️ ACCESO DENEGADO: Su cuenta ha sido desactivada por administración.");
+        return; // El 'return' corta la función aquí mismo y no lo deja entrar
       }
+
+      // --- VALIDACIÓN 2: COINCIDENCIA DE RUT ---
+      if (usuarioEncontrado.rol === 'CLIENTE' && usuarioEncontrado.rut !== rut) {
+        alert("Acceso denegado: El RUT no coincide con los registros del sistema.");
+        return;
+      }
+      
+      // --- ÉXITO: Si pasó las barreras de arriba, entra al sistema ---
+      setUsuarioActivo(usuarioEncontrado);
+      setVistaActual('inicio');
+
     } else { 
-      alert("Acceso denegado: Usuario no encontrado."); 
+      alert("Acceso denegado: Contraseña incorrecta."); 
     }
-  };
+  } else { 
+    alert("Acceso denegado: Usuario no encontrado."); 
+  }
+};
 
   return (
     <div className="flex-grow flex items-center justify-center p-4 animate-fade-in">
